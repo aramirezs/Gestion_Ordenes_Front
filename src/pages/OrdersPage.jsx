@@ -3,6 +3,8 @@ import { useOrderStore } from '../stores/orderStore'
 import orderService from '../services/orderService'
 import OrderFormModal from './OrderFormModal'
 import { PlusCircle, Search, Edit2, Trash2 } from 'lucide-react'
+import { toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 export default function OrdersPage() {
   const { orders, setOrders, setSelectedOrder } = useOrderStore()
@@ -66,10 +68,19 @@ export default function OrdersPage() {
 
   const handleDelete = async (id) => {
     if (confirm('¿Está seguro de eliminar la orden?')) {
-      await orderService.deleteOrder(id)
-      fetchOrders()
+      try {
+        await orderService.deleteOrder(id)
+        toast.success('Orden anulada correctamente')
+        setPage(1)
+        fetchOrders()
+      } catch (error) {
+        console.error('Error al anular la orden:', error)
+        toast.error('Hubo un error al anular la orden')
+      }
     }
   }
+
+  const isArray = Array.isArray(orders)
 
   return (
     <div className="p-4 bg-[#f8fafd] min-h-screen">
@@ -128,7 +139,7 @@ export default function OrdersPage() {
       </form>
 
       <div className="overflow-x-auto rounded shadow border border-gray-200">
-        {orders.length === 0 ? (
+        {!isArray || orders.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -189,7 +200,7 @@ export default function OrdersPage() {
         )}
       </div>
 
-      {orders.length > 0 && (
+      {isArray && orders.length > 0 && (
         <div className="flex justify-center mt-6 gap-2 flex-wrap">
           <button
             className="px-3 py-1 border rounded disabled:opacity-50 text-[#2d66f7]"
@@ -222,7 +233,8 @@ export default function OrdersPage() {
         onClose={(nuevaOrden) => {
           setIsModalOpen(false)
           if (nuevaOrden && !isEditing) {
-            setOrders((prev) => [{ ...nuevaOrden }, ...prev])
+            setPage(1)
+            setOrders((prev) => Array.isArray(prev) ? [nuevaOrden, ...prev] : [nuevaOrden])
           } else {
             fetchOrders()
           }

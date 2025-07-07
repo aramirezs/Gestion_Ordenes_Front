@@ -22,18 +22,35 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex items-center justify-center h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded shadow-md w-full max-w-sm">
-        <h2 className="text-xl font-semibold mb-4">Iniciar sesión</h2>
-        <form onSubmit={handleSubmit}>
-          <input type="text" placeholder="Usuario" value={username}
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 px-4">
+      <div className="bg-white p-6 rounded shadow-md w-full max-w-sm sm:max-w-md">
+        <div className="flex flex-col items-center mb-6">
+          <img src="../src/asset/images/logo-compra3.jpg" alt="Logo" className="h-25 mb-2" />
+          <h1 className="text-xl sm:text-2xl font-bold text-[#0057a3]">Gestión de Órdenes</h1>
+        </div>
+
+        <h2 className="text-lg font-semibold mb-4 text-center text-gray-700">Iniciar sesión</h2>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <input
+            type="text"
+            placeholder="Usuario"
+            value={username}
             onChange={(e) => setUsername(e.target.value)}
-            className="border p-2 mb-4 w-full" />
-          <input type="password" placeholder="Contraseña" value={password}
+            className="border p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-[#0057a3]"
+          />
+          <input
+            type="password"
+            placeholder="Contraseña"
+            value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="border p-2 mb-4 w-full" />
-          {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
-          <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded w-full">
+            className="border p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-[#0057a3]"
+          />
+          {error && <p className="text-red-500 text-sm">{error}</p>}
+          <button
+            type="submit"
+            className="bg-[#0057a3] hover:bg-[#004080] text-white py-2 px-4 rounded w-full transition"
+          >
             Ingresar
           </button>
         </form>
