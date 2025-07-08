@@ -39,7 +39,7 @@ export default function SidebarLayout() {
       >
         <div>
           <div className="flex items-center gap-2 mb-8">
-            <img src="../src/asset/images/logo-compra3.jpg" alt="Orden" className="h-10" />
+            <img src="/images/logo-compra3.jpg" alt="Orden" className="h-10" />
             <h2 className="text-xl font-bold text-[#0057a3]">ORDEN SOFT</h2>
           </div>
           <nav className="flex flex-col gap-3 text-sm font-medium">

@@ -25,7 +25,7 @@ export default function LoginPage() {
     <div className="flex items-center justify-center min-h-screen bg-gray-100 px-4">
       <div className="bg-white p-6 rounded shadow-md w-full max-w-sm sm:max-w-md">
         <div className="flex flex-col items-center mb-6">
-          <img src="../src/asset/images/logo-compra3.jpg" alt="Logo" className="h-25 mb-2" />
+          <img src="/images/logo-compra3.jpg" alt="Logo" className="h-25 mb-2" />
           <h1 className="text-xl sm:text-2xl font-bold text-[#0057a3]">Gestión de Órdenes</h1>
         </div>
 
