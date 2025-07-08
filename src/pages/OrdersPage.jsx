@@ -18,8 +18,10 @@ export default function OrdersPage() {
   const [totalPages, setTotalPages] = useState(1)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   const fetchOrders = async () => {
+    setIsLoading(true)
     try {
       const params = {
         cliente,
@@ -42,6 +44,8 @@ export default function OrdersPage() {
       console.error('Error al obtener órdenes:', error)
       setOrders([]) 
       setTotalPages(1)
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -68,6 +72,7 @@ export default function OrdersPage() {
 
   const handleDelete = async (id) => {
     if (confirm('¿Está seguro de eliminar la orden?')) {
+      setIsLoading(true)
       try {
         await orderService.deleteOrder(id)
         toast.success('Orden anulada correctamente')
@@ -76,6 +81,8 @@ export default function OrdersPage() {
       } catch (error) {
         console.error('Error al anular la orden:', error)
         toast.error('Hubo un error al anular la orden')
+      } finally {
+        setIsLoading(false)
       }
     }
   }
@@ -138,69 +145,75 @@ export default function OrdersPage() {
         </button>
       </form>
 
-      <div className="overflow-x-auto rounded shadow border border-gray-200">
-        {!isArray || orders.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-16">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-20 w-20 text-gray-400 mb-4"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 17v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2m4-4h.01M15 11a4 4 0 110-8 4 4 0 010 8zM21 17v-2a4 4 0 00-3-3.87"
-              />
-            </svg>
-            <p className="text-gray-500">No hay órdenes encontradas</p>
-          </div>
-        ) : (
-          <table className="w-full text-sm text-left">
-            <thead className="bg-[#e1ecf8]">
-              <tr>
-                <th className="px-4 py-2 border">ID</th>
-                <th className="px-6 py-2 border w-2/5">Cliente</th>
-                <th className="px-2 py-2 border w-1/5">Fecha</th>
-                <th className="px-4 py-2 border">Total</th>
-                <th className="px-4 py-2 border text-center">Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {orders.map((order) => (
-                <tr key={order.ordenId} className="hover:bg-[#f1f6fc]">
-                  <td className="px-4 py-2 border">{order.ordenId}</td>
-                  <td className="px-6 py-2 border">{order.cliente}</td>
-                  <td className="px-2 py-2 border">{order.fechaCreacion}</td>
-                  <td className="px-4 py-2 border">{order.total}</td>
-                  <td className="px-4 py-2 border">
-                    <div className="flex justify-center gap-2">
-                      <button
-                        className="text-[#007acc] hover:underline flex items-center gap-1"
-                        onClick={() => handleEdit(order)}
-                        title="Editar orden"
-                      >
-                        <Edit2 size={16} /> Editar
-                      </button>
-                      <button
-                        className="text-red-500 hover:underline flex items-center gap-1"
-                        onClick={() => handleDelete(order.ordenId)}
-                        title="Anular orden"
-                      >
-                        <Trash2 size={16} /> Anular
-                      </button>
-                    </div>
-                  </td>
+      {isLoading ? (
+        <div className="flex justify-center items-center py-10">
+          <div className="loader ease-linear rounded-full border-4 border-t-4 border-[#2d66f7] h-12 w-12 animate-spin"></div>
+        </div>
+      ) : (
+        <div className="overflow-x-auto rounded shadow border border-gray-200">
+          {!isArray || orders.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-16">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-20 w-20 text-gray-400 mb-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 17v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2m4-4h.01M15 11a4 4 0 110-8 4 4 0 010 8zM21 17v-2a4 4 0 00-3-3.87"
+                />
+              </svg>
+              <p className="text-gray-500">No hay órdenes encontradas</p>
+            </div>
+          ) : (
+            <table className="w-full text-sm text-left">
+              <thead className="bg-[#e1ecf8]">
+                <tr>
+                  <th className="px-4 py-2 border">ID</th>
+                  <th className="px-6 py-2 border w-2/5">Cliente</th>
+                  <th className="px-2 py-2 border w-1/5">Fecha</th>
+                  <th className="px-4 py-2 border">Total</th>
+                  <th className="px-4 py-2 border text-center">Acciones</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-      </div>
+              </thead>
+              <tbody>
+                {orders.map((order) => (
+                  <tr key={order.ordenId} className="hover:bg-[#f1f6fc]">
+                    <td className="px-4 py-2 border">{order.ordenId}</td>
+                    <td className="px-6 py-2 border">{order.cliente}</td>
+                    <td className="px-2 py-2 border">{order.fechaCreacion}</td>
+                    <td className="px-4 py-2 border">{order.total}</td>
+                    <td className="px-4 py-2 border">
+                      <div className="flex justify-center gap-2">
+                        <button
+                          className="text-[#007acc] hover:underline flex items-center gap-1"
+                          onClick={() => handleEdit(order)}
+                          title="Editar orden"
+                        >
+                          <Edit2 size={16} /> Editar
+                        </button>
+                        <button
+                          className="text-red-500 hover:underline flex items-center gap-1"
+                          onClick={() => handleDelete(order.ordenId)}
+                          title="Anular orden"
+                        >
+                          <Trash2 size={16} /> Anular
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+      )}
 
-      {isArray && orders.length > 0 && (
+      {isArray && orders.length > 0 && !isLoading && (
         <div className="flex justify-center mt-6 gap-2 flex-wrap">
           <button
             className="px-3 py-1 border rounded disabled:opacity-50 text-[#2d66f7]"
